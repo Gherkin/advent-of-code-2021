@@ -16,7 +16,7 @@ parseInt x = read x :: Int
  
     
 main = do     
-    withFile "test" ReadMode (\handle -> do  
+    withFile "part1.input" ReadMode (\handle -> do  
         contents <- hGetContents handle
         let list = fmap parseInt (lines contents)
         putStrLn $ show $ parse list)  

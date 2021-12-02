@@ -1,8 +1,9 @@
 import System.IO    
 
 slideWindow :: [Int] -> [Int]
+slideWindow [] = []
 slideWindow (x:y:z:[]) =
-  (sum [x, y, z])
+  [sum [x, y, z]]
 slideWindow (x:y:z:xs) =
   (sum [x, y, z]) : slideWindow (y : (z : xs))
 
@@ -24,7 +25,7 @@ parseInt x = read x :: Int
  
     
 main = do     
-    withFile "input" ReadMode (\handle -> do  
+    withFile "part1.input" ReadMode (\handle -> do  
         contents <- hGetContents handle
         let list = fmap parseInt (lines contents)
         let slid = slideWindow list

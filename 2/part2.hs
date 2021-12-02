@@ -4,7 +4,7 @@ import Control.Monad.Trans.Maybe
 import qualified Control.Monad.Trans.Class (lift)
 
 data Move = Forward Int | Up Int | Down Int deriving (Show)
-data Pos = Pos Int Int deriving (Show)
+data Pos = Pos Int Int Int deriving (Show)
 
 
 compose :: [a -> a] -> a -> a
@@ -38,9 +38,9 @@ parseMove :: String -> Maybe Move
 parseMove x = splitString x ' ' >>= parseMove'
 
 doMove :: Move -> Pos -> Pos
-doMove (Forward steps) (Pos x y) = Pos (x + steps) y
-doMove (Up steps) (Pos x y) = Pos x (y - steps)
-doMove (Down steps) (Pos x y) = Pos x (y + steps)
+doMove (Forward steps) (Pos x y a) = Pos (x + steps) (y + a * steps) a
+doMove (Up steps) (Pos x y a) = Pos x y (a - steps)
+doMove (Down steps) (Pos x y a) = Pos x y (a + steps)
 
 
 maybeToIO :: Maybe a -> IO a
@@ -48,7 +48,7 @@ maybeToIO Nothing = error "nothing!"
 maybeToIO (Just x) = return x
 
 mult :: Pos -> Int
-mult (Pos x y) = x * y
+mult (Pos x y _) = x * y
 
 main = do     
     withFile "part1.input" ReadMode (\handle -> do  
@@ -56,5 +56,5 @@ main = do
         let list = lines contents
         let moves = fmap parseMove list
         fs <- maybeToIO $ sequence $ fmap (\x -> fmap doMove x) moves
-        let pos = compose fs (Pos 0 0)
+        let pos = compose fs (Pos 0 0 0)
         putStrLn $ show $ mult pos)  
